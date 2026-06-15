@@ -1,5 +1,6 @@
 pyautogui
 schedule
 numpy
-mysql.connector
+mysql-connector-python
 opencv-python
+pillow

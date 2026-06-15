@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+env/
+venv/
+venv.bak/
+*.sqlite3
+
+# Logs
+*.log
+Logs/
+Backend_Files/error_log.txt
+Backend_Files/Logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Java
+*.class
+*.jar

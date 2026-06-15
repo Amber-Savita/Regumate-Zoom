@@ -14,8 +14,12 @@ import subprocess
 
 # Set environment variable for display
 os.environ['DISPLAY'] = ':0'
-# Set base_location to get current working directory and there would be no path difference
-base_location = os.getcwd()
+# Set base_location to the script directory so image and log paths are consistent
+base_location = os.path.dirname(os.path.abspath(__file__))
+error_log_path = os.path.join(base_location, "error_log.txt")
+
+pyautogui.FAILSAFE = False
+pyautogui.PAUSE = 0.5
 
 # Disclaimers
 print("Requirements: Run the Libraries file)")
@@ -32,8 +36,24 @@ db_database = "regumate"
 
 # Function to write errors to log file
 def log_error(error_message):
-    with open("error_log.txt", "a") as file:
+    with open(error_log_path, "a") as file:
         file.write(f"{datetime.now()} - {error_message}\n")
+
+# Load a UI template from the img directory
+def load_template(image_name):
+    template_path = os.path.join(base_location, "img", image_name)
+    if not os.path.isfile(template_path):
+        error_message = f"Template image missing: {template_path}"
+        print(error_message)
+        log_error(error_message)
+        return None
+
+    template = cv2.imread(template_path)
+    if template is None:
+        error_message = f"Failed to load template image: {template_path}"
+        print(error_message)
+        log_error(error_message)
+    return template
 
 # Function to fetch meeting credentials from the database
 def get_meeting_credentials():
@@ -86,7 +106,10 @@ def join_zoom_meeting(meet_id, password, meet_time, total_meet):
         # importing, loading, and matching of the first image named joinIMG.png, which is the join button in the Zoom app
         screenshot = pyautogui.screenshot()
         screenshot_cv = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
-        template_join = cv2.imread(base_location+'/img/joinIMG.png')
+        template_join = load_template("joinIMG.png")
+        if template_join is None:
+            return
+
         result_join = cv2.matchTemplate(screenshot_cv, template_join, cv2.TM_CCOEFF_NORMED)
         min_val_join, max_val_join, min_loc_join, max_loc_join = cv2.minMaxLoc(result_join)
         threshold_join = 0.8
@@ -103,7 +126,10 @@ def join_zoom_meeting(meet_id, password, meet_time, total_meet):
             # importing, loading, and matching of the second image named meetidimage.png, which is the write meeting ID button in the Zoom app
             screenshot_after_join = pyautogui.screenshot()
             screenshot_after_join_cv = cv2.cvtColor(np.array(screenshot_after_join), cv2.COLOR_RGB2BGR)
-            template_after_join = cv2.imread(base_location+'/img/meetidimage.png')
+            template_after_join = load_template("meetidimage.png")
+            if template_after_join is None:
+                return
+
             result_after_join = cv2.matchTemplate(screenshot_after_join_cv, template_after_join, cv2.TM_CCOEFF_NORMED)
             min_val_after_join, max_val_after_join, min_loc_after_join, max_loc_after_join = cv2.minMaxLoc(result_after_join)
             threshold_after_join = 0.9
@@ -126,7 +152,7 @@ def join_zoom_meeting(meet_id, password, meet_time, total_meet):
 
                 # Kill Zoom process
                 time.sleep(total_meet * 60)
-                subprocess.run(["pkill", "zoom"])
+                subprocess.run(["pkill", "zoom"], check=False)
 
             else:
                 error_message = "meetidimage image not found on the screen after joining."

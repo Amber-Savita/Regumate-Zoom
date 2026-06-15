@@ -1,0 +1,16 @@
+[Unit]
+Description=Regumate Daemon Service
+After=network.target
+
+[Service]
+User={USER}
+Group={USER}
+WorkingDirectory={WORKDIR}
+ExecStart=/bin/bash -c "startx & sleep 5 && export DISPLAY=:0 && {PYTHON} {WORKDIR}/regumate.py"
+Restart=always
+Environment=DISPLAY=:0
+StandardOutput=file:{WORKDIR}/Logs/main.logs
+StandardError=file:{WORKDIR}/Logs/main.logs
+
+[Install]
+WantedBy=multi-user.target

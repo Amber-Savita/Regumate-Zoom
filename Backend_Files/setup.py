@@ -142,12 +142,11 @@ def setup_database():
 # To install all Libraries required for our software (Requirements.txt)
 def install_requirements():
     try:
-        subprocess.run(["sudo", "apt", "update"])
-        subprocess.run(["sudo", "apt-get", "install", "python3-pip"])
-        subprocess.run(["pip", "install", "--upgrade", "pip"])
-        command = ["sudo", "apt-get", "install", "python3-tk"]
-        subprocess.run(command, check=True)
-        subprocess.run(["pip", "install", "-r", os.path.join(os.getcwd(), "Backend_Files", "requirements.txt")])
+        subprocess.run(["sudo", "apt", "update"], check=True)
+        subprocess.run(["sudo", "apt-get", "install", "-y", "python3-pip"], check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "--upgrade", "pip"], check=True)
+        subprocess.run(["sudo", "apt-get", "install", "-y", "python3-tk"], check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "-r", os.path.join(os.getcwd(), "Backend_Files", "requirements.txt")], check=True)
         messagebox.showinfo("Success", "Requirements installed successfully.")
         logging.info("Requirements installed successfully.")
     except Exception as e:
@@ -158,43 +157,34 @@ def install_requirements():
 # To start/enable/reload DAEMON-SERVICE named as regumate.service (it would keep running regumate.py on background)
 def install_service():
     try:
-        # Define the command to execute
-        command = 'find /home/*/ -name "regumate.py" -exec dirname {} \; | cut -d/ -f3 | sort -u'
+        current_user = getpass.getuser()
+        backend_dir = os.path.join(os.getcwd(), "Backend_Files")
+        template_path = os.path.join(backend_dir, "regumate.service.template")
 
-        # Execute the command and capture its output
-        output = subprocess.check_output(command, shell=True, text=True)
+        if not os.path.exists(template_path):
+            raise FileNotFoundError(f"Service template not found: {template_path}")
 
-        # Split the output into a list of usernames
-        usernames = output.strip().split('\n')
-        
-        # Convert the list of usernames to a string
-        usernames_str = ' '.join(usernames)
-        
-        # Read the service file and replace the 'alex' username with the client's username
-        with open(os.path.join(os.getcwd(), "Backend_Files", "regumate.service"), 'r') as f:
+        with open(template_path, 'r') as f:
             service_content = f.read()
 
-        service_content = service_content.replace('alex', usernames_str)
+        service_content = service_content.format(
+            USER=current_user,
+            WORKDIR=backend_dir,
+            PYTHON=sys.executable
+        )
 
-        # Write the modified service content to a temporary file
-        temp_service_file = os.path.join(os.getcwd(), "Backend_Files", "temp_regumate.service")
+        temp_service_file = os.path.join(backend_dir, "regumate.service")
         with open(temp_service_file, 'w') as f:
             f.write(service_content)
 
-        # Copy the modified service file to systemd directory
-        subprocess.run(["sudo", "cp", temp_service_file, "/etc/systemd/system/"])
-
-        # Reload systemd to apply the changes
-        subprocess.run(["systemctl", "daemon-reload"])
-
-        # Enable and start the service
-        subprocess.run(["systemctl", "enable", "temp_regumate.service"])
-        subprocess.run(["systemctl", "start", "temp_regumate.service"])
+        subprocess.run(["sudo", "cp", temp_service_file, "/etc/systemd/system/regumate.service"], check=True)
+        subprocess.run(["sudo", "systemctl", "daemon-reload"], check=True)
+        subprocess.run(["sudo", "systemctl", "enable", "regumate.service"], check=True)
+        subprocess.run(["sudo", "systemctl", "start", "regumate.service"], check=True)
 
         messagebox.showinfo("Success", "Service installed and started successfully.")
         logging.info("Service installed and started successfully.")
 
-        # Remove the temporary service file
         os.remove(temp_service_file)
 
     except Exception as e:
