@@ -1,64 +1,250 @@
-# Regumate Zoom Automation
+# REGUMATE – Intelligent Zoom Meeting Automation for Linux
 
-A Linux-based Zoom meeting automation project that opens Zoom, joins scheduled meetings, and handles credentials from a local MySQL database.
+![REGUMATE Banner](Backend_Files/img/banner.png)
 
-## What this project contains
+> *"Automating attendance. Maximizing productivity."*
 
-- `Backend_Files/regumate.py` - main automation script
-- `Backend_Files/setup.py` - installer GUI for dependencies, database, and service
-- `Backend_Files/requirements.txt` - Python dependency list
-- `Backend_Files/regumate.service.template` - systemd service template for Linux
-- `Backend_Files/img/` - image templates used for Zoom button detection
-- `Backend_Files/run_regumate.sh` - manual run helper script
+REGUMATE is a Linux-based Zoom Meeting Automation Platform designed to automatically join scheduled Zoom meetings without manual intervention. Built with Python, GUI automation, and database-driven scheduling, REGUMATE streamlines the repetitive process of joining daily online meetings, allowing students, professionals, organizations, and remote teams to focus on what matters most.
 
-## Prerequisites
+The project demonstrates how automation can be leveraged to increase efficiency, reduce missed meetings, and simplify virtual collaboration.
 
-- Linux with X11 display (this script uses GUI automation, not headless Zoom API)
-- Zoom installed and configured
-- Python 3 installed
-- MySQL or MariaDB installed
+---
 
-## Recommended setup steps
+## 🚀 Features
 
-1. Clone or copy this repository into your Linux machine.
-2. Open a terminal inside the repository root.
-3. Install dependencies:
-   ```bash
-   cd Backend_Files
-   python3 -m pip install -r requirements.txt
-   ```
-4. Make the helper script executable:
-   ```bash
-   chmod +x Backend_Files/run_regumate.sh
-   ```
-5. Run the setup GUI (optional):
-   ```bash
-   python3 Backend_Files/setup.py
-   ```
+### Automated Meeting Joining
 
-## Manual run
+* Launches Zoom automatically
+* Detects Zoom interface elements using image recognition
+* Enters Meeting ID and Passcode automatically
+* Joins meetings according to predefined schedules
 
-Use the helper script to start the automation manually:
+### Database-Driven Scheduling
+
+* Stores meeting credentials securely in MySQL/MariaDB
+* Reads meeting information dynamically
+* Supports multiple scheduled meetings
+
+### Linux Service Integration
+
+* Runs as a background systemd service
+* Starts automatically after system boot
+* Minimal user interaction required
+
+### GUI-Based Setup Utility
+
+* One-click dependency installation
+* Database configuration assistance
+* Service installation and management
+* User-friendly setup experience
+
+### Smart Image Detection
+
+* Uses template matching for Zoom UI buttons
+* Handles Join Meeting workflow automatically
+* Easily customizable for future Zoom UI updates
+
+---
+
+# 🏗️ Project Structure
+
+```text
+REGUMATE/
+│
+├── Backend_Files/
+│   ├── regumate.py                 # Main automation engine
+│   ├── setup.py                    # Installation & configuration GUI
+│   ├── requirements.txt            # Python dependencies
+│   ├── regumate.service.template   # Linux systemd template
+│   ├── run_regumate.sh             # Manual execution script
+│   │
+│   └── img/
+│       ├── joinIMG.png
+│       ├── meetidimage.png
+│       └── other template assets
+│
+└── README.md
+```
+
+---
+
+# ⚙️ Technology Stack
+
+* Python 3
+* MySQL / MariaDB
+* OpenCV
+* PyAutoGUI
+* Linux Systemd
+* Image Recognition
+* GUI Automation
+
+---
+
+# 📋 Prerequisites
+
+Before installing REGUMATE, ensure the following are available:
+
+* Linux Operating System
+* X11 Desktop Environment
+* Zoom Client Installed
+* Python 3.8+
+* MySQL or MariaDB
+* Internet Connection
+
+> **Note:** REGUMATE relies on GUI automation and image recognition. It does not use Zoom APIs.
+
+---
+
+# 🔧 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/regumate.git
+cd regumate
+```
+
+Install Python dependencies:
+
+```bash
+cd Backend_Files
+pip3 install -r requirements.txt
+```
+
+Make helper script executable:
+
+```bash
+chmod +x run_regumate.sh
+```
+
+Launch the setup utility:
+
+```bash
+python3 setup.py
+```
+
+The setup wizard will assist with:
+
+* Dependency installation
+* Database configuration
+* Service setup
+* Automation initialization
+
+---
+
+# ▶️ Running REGUMATE
+
+## Manual Mode
 
 ```bash
 cd Backend_Files
 ./run_regumate.sh
 ```
 
-## Service installation
+## Direct Execution
 
-If you want the automation to run as a background Linux service, use the setup GUI and click **Start Service**. That command will generate a systemd service file from `Backend_Files/regumate.service.template` and install it.
+```bash
+python3 regumate.py
+```
 
-## Important notes
+---
 
-- The automation works by matching Zoom UI buttons using the images in `Backend_Files/img/`.
-- If Zoom UI changes, you may need to update `joinIMG.png` and `meetidimage.png`.
-- Use the correct Linux display: `DISPLAY=:0` is assumed.
-- If your system uses Wayland, this script may not work.
+# 🔄 Running as a Linux Service
 
-## Improvements added
+REGUMATE can operate continuously in the background using systemd.
 
-- `requirements.txt` now uses the correct `mysql-connector-python` package name.
-- `regumate.py` now validates image templates before using them.
-- `setup.py` now installs Python dependencies with the current Python interpreter and writes a proper systemd service file.
-- `.gitignore` added to keep logs and temporary files out of Git.
+Using the Setup Utility:
+
+1. Open `setup.py`
+2. Configure the required settings
+3. Click **Start Service**
+
+The installer automatically generates and installs the systemd service from:
+
+```text
+Backend_Files/regumate.service.template
+```
+
+---
+
+# 🗄️ Database Integration
+
+REGUMATE stores meeting information inside a local MySQL database.
+
+Example fields:
+
+| Field      | Description             |
+| ---------- | ----------------------- |
+| Meeting ID | Zoom Meeting Identifier |
+| Passcode   | Meeting Password        |
+| Date       | Scheduled Meeting Date  |
+| Time       | Scheduled Meeting Time  |
+| Status     | Active / Inactive       |
+
+The automation engine continuously checks upcoming meetings and launches Zoom when the scheduled time arrives.
+
+---
+
+# 🧠 How It Works
+
+1. REGUMATE reads upcoming meetings from MySQL.
+2. At the scheduled time, Zoom is launched.
+3. OpenCV searches for required Zoom interface elements.
+4. PyAutoGUI interacts with the interface.
+5. Meeting credentials are entered automatically.
+6. REGUMATE joins the meeting without user intervention.
+
+---
+
+# 🛡️ Reliability Improvements
+
+Recent enhancements include:
+
+* Improved image template validation
+* Better dependency management
+* Correct MySQL connector package support
+* Robust systemd service generation
+* Cleaner project structure
+* Git ignore rules for logs and temporary files
+
+---
+
+# ⚠️ Important Notes
+
+* Designed primarily for X11 environments.
+* Wayland support may be limited.
+* Zoom UI updates may require refreshing image templates.
+* Ensure correct display permissions when running as a service.
+* Default display configuration assumes:
+
+```bash
+DISPLAY=:0
+```
+
+---
+
+# 🎯 Vision
+
+REGUMATE was created with a simple goal:
+
+**Eliminate repetitive meeting-joining tasks through intelligent automation.**
+
+The project showcases how automation, computer vision, and system integration can work together to improve productivity in modern remote-learning and remote-working environments.
+
+---
+
+# 👨‍💻 Author
+
+**Amber**
+
+Blockchain Developer • Automation Enthusiast • Technology Researcher
+
+Passionate about building solutions where software automation, intelligent systems, and productivity intersect.
+
+---
+
+## ⭐ Support
+
+If you find REGUMATE useful, consider giving the project a star and contributing to future improvements.
+
+**Automate the routine. Focus on the important.**
