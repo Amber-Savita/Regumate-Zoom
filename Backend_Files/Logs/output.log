@@ -1,0 +1,14 @@
+2024-03-20 00:03:16,586 - ERROR - An error occurred: Command '['sudo', 'apt-get', 'install', 'python3-tk']' returned non-zero exit status 1.
+2024-03-20 00:03:55,939 - INFO - Requirements installed successfully.
+2024-03-20 00:09:05,402 - INFO - Service installed and started successfully.
+2024-03-20 00:10:17,838 - INFO - Requirements installed successfully.
+2024-03-20 00:10:21,770 - INFO - MySql installed successfully
+2024-03-20 00:10:23,141 - INFO - Database created successfuly
+2024-03-20 00:10:26,461 - INFO - Service installed and started successfully.
+2024-03-20 00:13:37,961 - INFO - Requirements installed successfully.
+2024-03-20 00:13:43,033 - INFO - Service installed and started successfully.
+2024-04-04 23:34:17,330 - ERROR - An error occurred: [Errno 2] No such file or directory: '/home/alex/Desktop/zoom/Backend_Files/Backend_Files/regumate.service'
+2024-04-04 23:34:23,706 - ERROR - An error occurred: Command '['sudo', 'apt-get', 'install', 'python3-tk']' returned non-zero exit status 1.
+2024-04-05 16:47:00,204 - INFO - Requirements installed successfully.
+2024-04-05 16:47:07,654 - ERROR - An error occurred: name 'platform' is not defined
+2024-04-05 16:47:30,592 - ERROR - An error occurred: [Errno 2] No such file or directory: '/home/alex/Desktop/zoom/Backend_Files/Backend_Files/regumate.service'
